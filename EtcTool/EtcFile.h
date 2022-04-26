@@ -123,6 +123,8 @@ namespace Etc
 		void UseSingleBlock(int a_iPixelX = -1, int a_iPixelY = -1);
 	private:
 
+		void DetermineFormatFromFileExtension();
+
 		char *m_pstrFilename;               // includes directory path and file extension
 		Format m_fileformat;
 		Image::Format m_imageformat;

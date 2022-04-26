@@ -25,25 +25,20 @@ namespace Etc
 
 	// ----------------------------------------------------------------------------------------------------
 	//
-	FileHeader_Pkm::FileHeader_Pkm(File *a_pfile)
+	FileHeader_Pkm::FileHeader_Pkm(File *a_pfile, Image::Format pixelFormat)
 	{
 		m_pfile = a_pfile;
 
-		static const char s_acMagicNumberData[4] = { 'P', 'K', 'M', ' ' };
-		static const char s_acVersionData[2] = { '1', '0' };
-
-		for (unsigned int ui = 0; ui < sizeof(s_acMagicNumberData); ui++)
-		{
-			m_data.m_acMagicNumber[ui] = s_acMagicNumberData[ui];
+		// !!!Notes: PKM only support RGB8 or RGBA8
+		if (pixelFormat >= Image::Format::RGB8) {
+			memcpy(m_data.m_acMagic, "PKM 20", 6);
+			m_data.m_ucDataType_lsb = pixelFormat == Image::Format::RGBA8 ? ETC2_RGBA_NO_MIPMAPS : ETC2_RGB_NO_MIPMAPS;
 		}
-
-		for (unsigned int ui = 0; ui < sizeof(s_acVersionData); ui++)
-		{
-			m_data.m_acVersion[ui] = s_acVersionData[ui];
+		else {
+			memcpy(m_data.m_acMagic, "PKM 10", 6);
+			m_data.m_ucDataType_lsb = ETC1_RGB_NO_MIPMAPS;
 		}
-
-		m_data.m_ucDataType_msb = 0;        // ETC1_RGB_NO_MIPMAPS
-		m_data.m_ucDataType_lsb = 0;
+		m_data.m_ucDataType_msb = 0;
 
 		m_data.m_ucOriginalWidth_msb = (unsigned char)(m_pfile->GetSourceWidth() >> 8);
 		m_data.m_ucOriginalWidth_lsb = m_pfile->GetSourceWidth() & 0xFF;

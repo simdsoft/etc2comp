@@ -20,6 +20,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 
+#define ETC1_RGB_NO_MIPMAPS 0
+#define ETC2_RGB_NO_MIPMAPS 1
+#define ETC2_RGBA_NO_MIPMAPS 3
+
 namespace Etc
 {
 
@@ -43,7 +47,7 @@ namespace Etc
     {
     public:
 
-		FileHeader_Pkm(File *a_pfile);
+		FileHeader_Pkm(File *a_pfile, Image::Format pixelFormat);
 
 		virtual void Write(FILE *a_pfile);
 		virtual ~FileHeader_Pkm(void) {}
@@ -51,8 +55,8 @@ namespace Etc
 
 		typedef struct
 		{
-			char m_acMagicNumber[4];
-			char m_acVersion[2];
+			char m_acMagic[6];
+			// char m_acVersion[2];
 			unsigned char m_ucDataType_msb;             // e.g. ETC1_RGB_NO_MIPMAPS
 			unsigned char m_ucDataType_lsb;
 			unsigned char m_ucExtendedWidth_msb;     //  padded to 4x4 blocks

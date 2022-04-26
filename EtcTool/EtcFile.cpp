@@ -55,8 +55,7 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 	m_fileformat = a_fileformat;
 	if (m_fileformat == Format::INFER_FROM_FILE_EXTENSION)
 	{
-		// ***** TODO: add this later *****
-		m_fileformat = Format::KTX;
+		DetermineFormatFromFileExtension();
 	}
 
 	m_imageformat = a_imageformat;
@@ -74,7 +73,7 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 	switch (m_fileformat)
 	{
 	case Format::PKM:
-		m_pheader = new FileHeader_Pkm(this);
+		m_pheader = new FileHeader_Pkm(this, a_imageformat);
 		break;
 
 	case Format::KTX:
@@ -107,8 +106,7 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 	m_fileformat = a_fileformat;
 	if (m_fileformat == Format::INFER_FROM_FILE_EXTENSION)
 	{
-		// ***** TODO: add this later *****
-		m_fileformat = Format::KTX;
+		DetermineFormatFromFileExtension();
 	}
 
 	m_imageformat = a_imageformat;
@@ -127,7 +125,7 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 	switch (m_fileformat)
 	{
 	case Format::PKM:
-		m_pheader = new FileHeader_Pkm(this);
+		m_pheader = new FileHeader_Pkm(this, a_imageformat);
 		break;
 
 	case Format::KTX:
@@ -143,7 +141,8 @@ File::File(const char *a_pstrFilename, Format a_fileformat, Image::Format a_imag
 
 // ----------------------------------------------------------------------------------------------------
 //
-File::File(const char *a_pstrFilename, Format a_fileformat)
+
+File::File(const char *a_pstrFilename, Format /*a_fileformat*/)
 {
 	if (a_pstrFilename == nullptr)
 	{
@@ -155,12 +154,8 @@ File::File(const char *a_pstrFilename, Format a_fileformat)
 		strcpy(m_pstrFilename, a_pstrFilename);
 	}
 
-	m_fileformat = a_fileformat;
-	if (m_fileformat == Format::INFER_FROM_FILE_EXTENSION)
-	{
-		// ***** TODO: add this later *****
-		m_fileformat = Format::KTX;
-	}
+	printf("WARNING: support KTX only at %s:%d", __FUNCTION__, (int)__LINE__);
+	m_fileformat = Format::KTX;
 
 	FILE *pfile = fopen(m_pstrFilename, "rb");
 	if (pfile == nullptr)
@@ -260,6 +255,21 @@ File::~File()
 		delete m_pheader;
 		m_pheader = nullptr;
 	}
+}
+
+void File::DetermineFormatFromFileExtension()
+{
+	auto pszExtension = strrchr(m_pstrFilename, '.');
+	if (pszExtension) {
+		if (strcmp(pszExtension, ".pkm") == 0)
+			m_fileformat = Format::PKM;
+		if (strcmp(pszExtension, ".ktx") == 0)
+			m_fileformat = Format::KTX;
+		else
+			m_fileformat = Format::PKM;
+	}
+	else
+		m_fileformat = Format::PKM;
 }
 
 void File::UseSingleBlock(int a_iPixelX, int a_iPixelY)
