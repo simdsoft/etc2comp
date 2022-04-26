@@ -247,6 +247,20 @@ namespace Etc
 
 	}
 
+	void SourceImage::premultiplyAlpha() {
+		int iPixels = m_uiWidth * m_uiHeight;
+
+		ColorFloatRGBA* pfrgbaPixel = m_pafrgbaPixels;
+		for (int iPixel = 0; iPixel < iPixels; iPixel++)
+		{
+			pfrgbaPixel->fR *= pfrgbaPixel->fA;
+			pfrgbaPixel->fG *= pfrgbaPixel->fA;
+			pfrgbaPixel->fB *= pfrgbaPixel->fA;
+
+			pfrgbaPixel++;
+		}
+	}
+
 	// ----------------------------------------------------------------------------------------------------
 	//
 	void SourceImage::NormalizeXYZ(void)

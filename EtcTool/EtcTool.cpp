@@ -90,6 +90,7 @@ public:
 		i_vPixel = -1;
 		verboseOutput = false;
 		boolNormalizeXYZ = false;
+		boolPMA = false;
 		mipmaps = 1;
 		mipFilterFlags = Etc::FILTER_WRAP_NONE;
 	}
@@ -114,6 +115,7 @@ public:
 	int i_hPixel;
 	int i_vPixel;
 	bool boolNormalizeXYZ;
+	bool boolPMA;
 	int mipmaps;
 	unsigned int mipFilterFlags;
 };
@@ -148,10 +150,12 @@ int main(int argc, const char * argv[])
 		printf("SourceImage: %s\n", commands.pstrSourceFilename);
 	}
 	SourceImage sourceimage(commands.pstrSourceFilename, commands.i_hPixel, commands.i_vPixel);
+
+	if (commands.boolPMA)
+		sourceimage.premultiplyAlpha();
+
 	if (commands.boolNormalizeXYZ)
-	{
 		sourceimage.NormalizeXYZ();
-	}
 
 	unsigned int uiSourceWidth = sourceimage.GetWidth();
 	unsigned int uiSourceHeight = sourceimage.GetHeight();
@@ -722,6 +726,10 @@ bool Commands::ProcessCommandLineArguments(int a_iArgs, const char *a_apstrArgs[
 				}
 			}
 		}
+		else if (strcmp(a_apstrArgs[iArg], "-pma") == 0)
+        {
+		    boolPMA = true;
+        }
 		else if (a_apstrArgs[iArg][0] == '-')
         {
 			printf("Error: unknown option (%s)\n", a_apstrArgs[iArg]);
@@ -804,6 +812,7 @@ void Commands::PrintUsageMessage(void)
 	printf("                                  process\n");
 	printf("    -mipmaps or -m <mip_count>    sets the maximum number of mipaps to generate (default=1)\n");
 	printf("    -mipwrap or -w <x|y|xy>       sets the mipmap filter wrap mode (default=clamp)\n");
+	printf("    -nopma       disable premultiplay alpha for source image pixels\n");
 	printf("\n");
 
 	exit(1);

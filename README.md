@@ -166,6 +166,11 @@ If the mipmaps option is not specified no mipmaps are created.
 are "x", "y" and "xy" which specify wrapping in x only, y only or x and y respectively.
 The default options are clamping in both x and y.
 
+  
+  
+Compress a ETC2_RGBA_EAC command: 
+```etctool.exe -format RGBA8 -effort 100 -errormetric rgba etc2_rgba.png -pma -v -output etc2_rgba.pkm```
+
 Note: Path names can use slashes or backslashes.  The tool will convert the 
 slashes to the appropriate polarity for the current platform.
 
