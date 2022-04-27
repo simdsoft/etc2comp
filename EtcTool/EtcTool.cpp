@@ -151,8 +151,10 @@ int main(int argc, const char * argv[])
 	}
 	SourceImage sourceimage(commands.pstrSourceFilename, commands.i_hPixel, commands.i_vPixel);
 
-	if (commands.boolPMA)
+	if (commands.format == Image::Format::RGBA8 && commands.boolPMA) {
 		sourceimage.premultiplyAlpha();
+		commands.e_ErrMetric = Etc::ErrorMetric::RGBX; // Needs force set to rgbx when do PMA
+	}
 
 	if (commands.boolNormalizeXYZ)
 		sourceimage.NormalizeXYZ();
