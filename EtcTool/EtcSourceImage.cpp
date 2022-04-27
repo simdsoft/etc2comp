@@ -122,7 +122,10 @@ namespace Etc
 		if (paucPixels == nullptr)
 		{
 			//we can load 8 or 16 bit pngs
-			int iBitDepth = 16;
+			//Note: 
+			// a. 8bit maybe enough
+			// b. set 8bit, the paucPixels decoded by lodepng will be same with libpng
+			const int iBitDepth = 16;
 			int error = lodepng_decode_file(&paucPixels,
 				(unsigned int*)&iWidth, (unsigned int*)&iHeight,
 				m_pstrFilename,
